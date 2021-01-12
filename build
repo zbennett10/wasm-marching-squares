@@ -1,0 +1,3 @@
+#! /bin/bash
+
+emcc marching-squares-wasm-api.c marching-squares.c ./include/jansson-2.13.1/emcc-lib/lib/libjansson.a -Iinclude/jansson-2.13.1/emcc-lib/include -s EXPORTED_FUNCTIONS='["_generate_isolines_geojson_"]' -s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall', 'UTF8ToString']" -s WASM=1 -s ALLOW_MEMORY_GROWTH=1 -s NO_EXIT_RUNTIME=0 -s LLD_REPORT_UNDEFINED -s ASSERTIONS=1 -o geojson.html

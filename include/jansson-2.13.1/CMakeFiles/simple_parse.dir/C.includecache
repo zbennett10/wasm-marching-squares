@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/Users/zach/dev/terra-incognita/wasm-gis-toolkit/wasm-marching-squares/include/jansson-2.13.1/examples/simple_parse.c
+jansson.h
+-
+stdio.h
+-
+stdlib.h
+-
+
+include/jansson.h
+stdarg.h
+-
+stdio.h
+-
+stdlib.h
+-
+jansson_config.h
+include/jansson_config.h
+
+include/jansson_config.h
+stdint.h
+-
+inttypes.h
+-
+sys/types.h
+-
+

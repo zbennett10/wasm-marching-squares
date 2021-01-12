@@ -1,0 +1,8 @@
+/Users/zach/dev/terra-incognita/wasm-gis-toolkit/wasm-marching-squares/include/jansson-2.13.1/emcc-lib/lib/libjansson.a
+/Users/zach/dev/terra-incognita/wasm-gis-toolkit/wasm-marching-squares/include/jansson-2.13.1/emcc-lib/include/jansson_config.h
+/Users/zach/dev/terra-incognita/wasm-gis-toolkit/wasm-marching-squares/include/jansson-2.13.1/emcc-lib/include/jansson.h
+/Users/zach/dev/terra-incognita/wasm-gis-toolkit/wasm-marching-squares/include/jansson-2.13.1/emcc-lib/lib/pkgconfig/jansson.pc
+/Users/zach/dev/terra-incognita/wasm-gis-toolkit/wasm-marching-squares/include/jansson-2.13.1/emcc-lib/lib/cmake/jansson/janssonConfig.cmake
+/Users/zach/dev/terra-incognita/wasm-gis-toolkit/wasm-marching-squares/include/jansson-2.13.1/emcc-lib/lib/cmake/jansson/janssonConfigVersion.cmake
+/Users/zach/dev/terra-incognita/wasm-gis-toolkit/wasm-marching-squares/include/jansson-2.13.1/emcc-lib/lib/cmake/jansson/janssonTargets.cmake
+/Users/zach/dev/terra-incognita/wasm-gis-toolkit/wasm-marching-squares/include/jansson-2.13.1/emcc-lib/lib/cmake/jansson/janssonTargets-noconfig.cmake
