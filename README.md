@@ -4,8 +4,22 @@ The algorithm is implemented in C and currently generates GeoJSON isolines given
 
 # Usage
 
+# Caveats
+- Isoband generation is not implemented *yet*
+- GeoTIFFs covering the earth and/or having *lots* of intervals can cause out of memory errors... PRs welcome while this is worked out...
+
 
 # Build
+To properly build, you will need to download the Emscripten SDK.
+
+1. Compile the Jansson C JSON library using `emcc`
+    - Remove CMakeCache.txt from `include/jansson-2.13.1 if it exists
+    - `cd include/jansson-2.13.1 && emcmake cmake -DCMAKE_INSTALL_PREFIX:PATH=./emcc-lib .`
+    - `emmake make VERBOSE=1`
+    - `emmake make check`
+    - `emmake make install`
+
+2. Generate the WASM code and JavaScript 'glue' code
 ```bash
 ./build
 ```
@@ -13,7 +27,14 @@ The algorithm is implemented in C and currently generates GeoJSON isolines given
 # Test
 
 ## C Library Unit Testing
+1. Compile the Jansson C JSON library using cmake
+    - Remove CMakeCache.txt from `include/jansson-2.13.1 if it exists
+    - `cd include/jansson-2.13.1 && cmake .`
+    - `emmake make VERBOSE=1`
+    - `emmake make check`
+    - `emmake make install`
 
+2. Compile and run the unit tests
 ```bash
 cd test && ./test
 ```

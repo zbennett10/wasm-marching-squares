@@ -10,20 +10,6 @@ static short dy_contour[16]  = { 0, -1, 0, 0, 1, 1, 1, 1, 0, -1, 0, 0, 0, -1, 0,
 static char* start_edges[16] = { "none", "left", "bottom", "left", "right", "none", "bottom", "left", "top", "top", "none", "top", "right", "right", "bottom", "none" };
 static char* next_edges[16]  = { "none", "bottom", "right", "right", "top", "top", "top", "top", "left", "bottom", "right", "right", "left", "bottom", "left", "none" };
 
-// test build: cc -o prog prog.c -ljansson
-
-
-/*
- * To compile jansson C JSON library using emscripten
- * Remove jansson CMakeCache.txt
- * emcmake cmake -DCMAKE_INSTALL_PREFIX:PATH=~/dev/terra-incognita/wasm-gis-toolkit/wasm-marching-squares/include/jansson-2.13.1/emcc-lib .
- * emmake make VERBOSE=1
- * emmake make check
- * emmake make install
- * 
- * To compile with emscripten:
- * emcc marching-squares.c ./include/jansson-2.13.1/emcc-lib/lib/libjansson.a -Iinclude/jansson-2.13.1/emcc-lib/include -s EXPORTED_FUNCTIONS='["_generate_isolines_geojson", "_main"]' -s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']" -s WASM=1 -s NO_EXIT_RUNTIME=1 -s LLD_REPORT_UNDEFINED -o geojson.html 
- */
 
 
 char* generate_isolines_geojson(
