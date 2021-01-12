@@ -1,0 +1,5 @@
+/test/run-tests.dSYM
+/test/marching-squares.test.dSYM
+*.o
+marching-squares.test
+run-tests

@@ -1,0 +1,6 @@
+#! /bin/bash
+
+# Ensure that you have built the correct jannsson static library by running cmake, make commands in the include directory.
+
+# gcc -g -Wall -Werror -pedantic marching-squares.test.c marching-squares.c ./include/jansson-2.13.1/lib/libjansson.a -o run-tests && ./run-tests
+gcc -g -Wall -Werror -pedantic marching-squares.test.c ../lib/marching-squares.c ../include/jansson-2.13.1/lib/libjansson.a -o run-tests && ./run-tests
