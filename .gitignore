@@ -3,3 +3,4 @@
 *.o
 marching-squares.test
 run-tests
+.DS_Store

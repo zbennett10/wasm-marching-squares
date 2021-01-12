@@ -14,9 +14,8 @@ L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {
 
 // Download geotiff using local ArrayBuffer
 (async function() {
-    // const response = await fetch('./landsat.tif');
-    // const response = await fetch('./sfctmp.tiff');
-    const response = await fetch('tiffs/vardah.tiff');
+    // const response = await fetch('tiffs/sfctmp.tif');
+    const response = await fetch('tiffs/vardah.tif');
     const arrayBuffer = await response.arrayBuffer();
     const tiff = await GeoTIFF.fromArrayBuffer(arrayBuffer);
     const image = await tiff.getImage();
@@ -60,6 +59,7 @@ L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {
 
     var transform = [tiepoint.x, pixelScale[0], 0, tiepoint.y, 0, -1*pixelScale[1]];
 
+    // USE FOR vardah.tif
     var tiffWidth = image.getWidth();
     var tiffHeight = image.getHeight();
     var pressData = new Array(tiffHeight);
@@ -82,14 +82,28 @@ L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {
 
         }
     }
+
+    // USE FOR sfctmp.tif
+    // var tiffWidth = image.getWidth();
+    // var tiffHeight = image.getHeight();
+    // var pressData = new Array(tiffHeight);
+    // for (var j = 0; j<tiffHeight; j++){
+    //     pressData[j] = new Array(tiffWidth);
+    //     for (var i = 0; i<tiffWidth; i++){
+    //         pressData[j][i] = rasters[0][i + j*tiffWidth];
+    //     }
+    // }
     
+    // var intervalsPress = [30, 40, 50, 60, 70, 80, 90, 100, 110, 120];
     var intervalsPress = [970, 972, 974, 976, 978, 980, 982, 984, 986, 988, 990, 992, 994, 996, 998,
         1000, 1002, 1004, 1006, 1008, 1010, 1012, 1014, 1016, 1018, 1020, 1022, 1024, 1026, 1028];
     const transformedRasterData = pressData;
     const intervals = intervalsPress;
 
-    let rasterDataPointer, geoTransformPointer, intervalsPointer, pressIsolinesPointer;
+    let rasterDataPointer, geoTransformPointer, intervalsPointer;
     let isolinesLayer;
+
+    console.log(transformedRasterData);
 
     document.querySelector('.mybutton')
             .addEventListener('click', () => {
