@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <jansson.h>
 
 #ifndef MARCHING_SQUARES
 #define MARCHING_SQUARES

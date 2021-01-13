@@ -10,8 +10,6 @@ static short dy_contour[16]  = { 0, -1, 0, 0, 1, 1, 1, 1, 0, -1, 0, 0, 0, -1, 0,
 static char* start_edges[16] = { "none", "left", "bottom", "left", "right", "none", "bottom", "left", "top", "top", "none", "top", "right", "right", "bottom", "none" };
 static char* next_edges[16]  = { "none", "bottom", "right", "right", "top", "top", "top", "top", "left", "bottom", "right", "right", "left", "bottom", "left", "none" };
 
-
-
 char* generate_isolines_geojson(
     int raster_data_rows,
     int raster_data_cols,
@@ -21,11 +19,10 @@ char* generate_isolines_geojson(
     double intervals[interval_count]
 ) {
     json_t *isolines      = json_object(),
-           *features      = json_array();
+            *features      = json_array();
 
     json_object_set_new(isolines, "type", json_string("FeatureCollection"));
     json_object_set_new(isolines, "features", features);
-
 
     // Implement marching squares for each threshold boundary
 
@@ -55,10 +52,10 @@ char* generate_isolines_geojson(
         // Generate a grid of cells each containing a binary digit dependent upon the given threshold
         for (int i = 0; i < grid_rows; i++) {
             for (int j = 0; j < grid_cols; j++) {
-                double top_left = raster_data[i+1][j], 
-                       top_right = raster_data[i+1][j+1],
+                double top_left     = raster_data[i+1][j], 
+                       top_right    = raster_data[i+1][j+1],
                        bottom_right = raster_data[i][j+1],
-                       bottom_left = raster_data[i][j];
+                       bottom_left  = raster_data[i][j];
 
                 if(isnan(top_left) || isnan(top_right) || isnan(bottom_right) || isnan(bottom_left)){
                   continue;
@@ -138,6 +135,7 @@ char* generate_isolines_geojson(
                         printf("Illegal contour_state detected: %d\n",contour_state);
                     }
 
+                    // TODO: Let's malloc this...
                     ContourGridCell cell = {
                         .threshold = threshold,
                         .contour_state = contour_state,
@@ -184,7 +182,7 @@ char* generate_isolines_geojson(
                       Point new_path_endpoint = tail->point;
 
                       // Why path_idx need to be - 3 here..? Original code has it at - 1 but missed lots of merged paths without it.
-                      for(int k = path_idx - 3; k >= 0; k--){
+                      for(int k = path_idx - 1; k >= 0; k--){
                         if((fabs(paths[k]->point.x - new_path_endpoint.x) <= epsilon) && (fabs(paths[k]->point.y - new_path_endpoint.y) <= epsilon)){
                           for(int l = get_line_count(path) - 2; l >= 0; --l){
                               MultiLine *tmp = paths[k];
@@ -239,10 +237,6 @@ char* generate_isolines_geojson(
     return json_dumps(isolines, JSON_COMPACT);
 }
 
-     /*
-    construct consecutive line segments from starting cell by
-    walking arround the enclosed area clock-wise
-   */
 MultiLine* gen_path(int grid_cols, ContourGridCell (*cells)[grid_cols], int row, int col, int row_count) {
     MultiLine *path = (MultiLine*)malloc(sizeof(MultiLine));
 
@@ -350,11 +344,6 @@ MultiLine* gen_path(int grid_cols, ContourGridCell (*cells)[grid_cols], int row,
     return path;
   }
 
-
-// #ifdef __cplusplus
-// }
-// #endif
-
 Point gen_point_from_edge(ContourGridCell cell, char* edge) {
     Point pt = { .x = 0.0, .y = 0.0 };
 
@@ -407,8 +396,11 @@ int get_line_count(MultiLine *path) {
 }
 
 MultiLine* get_segment_at_index(MultiLine *path, int i) {
+  if (i == 0)
+    return path;
+
   MultiLine *current = path;
-  while(current && i >= 0) {
+  while(current && i > 0) {
     current = current->next;
     i--;
   }

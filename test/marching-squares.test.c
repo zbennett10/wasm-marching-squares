@@ -1,8 +1,38 @@
 #define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
 #include <string.h>
+#include <stdbool.h>
 #include "../include/greatest.h"
 #include "../lib/marching-squares.h"
 
+TEST marching_squares_lib_should_get_path_line_count(void) {
+    Point start = { 10, 12 }, end = {11, 13};
+    MultiLine path = { .mergable = false, .point = start, .next = NULL };
+    int first_path_count = get_line_count(&path);
+
+    ASSERT_EQ(1, first_path_count);
+
+    MultiLine segment_two = { .mergable = false, .point = end, .next = NULL};
+    path.next = &segment_two;
+
+    int second_path_count = get_line_count(&path);
+
+    ASSERT_EQ(2, second_path_count);
+
+    PASS();
+}
+
+TEST marching_squares_lib_should_get_segment_at_index(void) {
+    Point start = { 10, 12 }, middle = {50, 40}, end = {11, 13};
+    MultiLine segment_end = { .mergable = false, .point = end, .next = NULL};
+    MultiLine segment_middle = { .mergable = false, .point = middle, .next = &segment_end};
+    MultiLine path = { .mergable = false, .point = start, .next = &segment_middle };
+
+    ASSERT_EQ(50, get_segment_at_index(&path, 1)->point.x);
+    ASSERT_EQ(12, get_segment_at_index(&path, 0)->point.y);
+    ASSERT_EQ(13, get_segment_at_index(&path, 2)->point.y);
+
+    PASS();
+}
 
 TEST marching_squares_lib_should_generate_geojson_isolines_for_simple_data(void) {
     double raster_data[3][3] = { {0,0,0}, {0,1,0}, {0,0,0} };
@@ -103,6 +133,8 @@ TEST marching_squares_lib_should_generate_geojson_isolines_for_unclosed_paths(vo
 
 /* Suites can group multiple tests with common setup. */
 SUITE(MARCHING_SQUARES_ISOLINE) {
+    RUN_TEST(marching_squares_lib_should_get_path_line_count);
+    RUN_TEST(marching_squares_lib_should_get_segment_at_index);
     RUN_TEST(marching_squares_lib_should_generate_geojson_isolines_for_simple_data);
     RUN_TEST(marching_squares_lib_should_generate_geojson_isolines_for_more_complex_data);
     RUN_TEST(marching_squares_lib_should_generate_geojson_isolines_for_unclosed_paths);
