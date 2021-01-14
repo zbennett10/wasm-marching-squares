@@ -100,7 +100,7 @@ L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {
     const transformedRasterData = pressData;
     const intervals = intervalsPress;
 
-    let rasterDataPointer, geoTransformPointer, intervalsPointer;
+    let rasterDataPointer, geoTransformPointer, intervalsPointer, pressIsolinesPointer;
     let isolinesLayer;
 
     console.log(transformedRasterData);
@@ -128,12 +128,14 @@ L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {
                     intervalsPointer = Module._malloc(bytesPerElement * intervals.length);
                     Module.HEAPF64.set(intervals, (intervalsPointer / bytesPerElement));
 
-                    const pressIsolines = Module.ccall(
+                    const pressIsolinesPointer = Module.ccall(
                         'generate_isolines_geojson_',	// name of C function
-                        'string',	// Get the raw pointer
+                        'number',	// Get the raw pointer - make sure to free this!
                         ['number', 'number', 'number', 'number', 'number', 'number'],	// argument types
                         [raster_data_rows, raster_data_cols, rasterDataPointer, geoTransformPointer, intervals.length, intervalsPointer ]	// arguments
                     );
+
+                    const pressIsolines = Module.UTF8ToString(pressIsolinesPointer); // Convert the pointer to the string we need
                     
                     isolinesLayer = L.geoJson(JSON.parse(pressIsolines), {
                         style: {
@@ -148,7 +150,7 @@ L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {
                 } catch (error) {
                     console.log('ccall error generating isolines: ', error);
                 } finally {
-                    [rasterDataPointer, geoTransformPointer, intervalsPointer].forEach(pointer => {
+                    [rasterDataPointer, geoTransformPointer, intervalsPointer, pressIsolinesPointer].forEach(pointer => {
                         if (pointer) Module._free(pointer);
                     })
                 }

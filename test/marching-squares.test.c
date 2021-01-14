@@ -49,7 +49,7 @@ TEST marching_squares_lib_should_generate_geojson_isolines_for_simple_data(void)
         intervals
     );
 
-    char* expected = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"MultiLineString\",\"coordinates\":[[[11.0,9.5],[10.5,9.0],[11.0,8.5],[11.5,9.0],[11.0,9.5]]]},\"properties\":{}}]}"; 
+    char* expected = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"MultiLineString\",\"coordinates\":[[[11.0,9.5],[10.5,9.0],[11.0,8.5],[11.5,9.0],[11.0,9.5]]]},\"properties\":{\"threshold\":0.5}}]}"; 
     printf("Expected: %s\n\n", geojson);
     printf("Got: %s\n", expected);
     ASSERT(!strcmp(geojson, expected));
@@ -63,7 +63,7 @@ TEST marching_squares_lib_should_generate_geojson_isolines_for_simple_data(void)
         intervals
     );
 
-    char* expected_2 = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"MultiLineString\",\"coordinates\":[[[21.0,9.5],[20.5,9.0],[21.0,8.5],[21.5,9.0],[21.0,9.5]]]},\"properties\":{}}]}"; 
+    char* expected_2 = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"MultiLineString\",\"coordinates\":[[[21.0,9.5],[20.5,9.0],[21.0,8.5],[21.5,9.0],[21.0,9.5]]]},\"properties\":{\"threshold\":0.5}}]}"; 
     printf("Expected: %s\n\n", expected_2);
     printf("Got: %s\n", geojson_2);
     ASSERT(!strcmp(geojson_2, expected_2));
@@ -97,7 +97,7 @@ TEST marching_squares_lib_should_generate_geojson_isolines_for_more_complex_data
         intervals
     );
 
-    char* expected = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"MultiLineString\",\"coordinates\":[[[11.0,9.4285714285714288],[10.571428571428571,9.0],[10.571428571428571,8.0],[10.571428571428571,7.0],[10.571428571428571,6.0],[10.571428571428571,5.0],[11.0,4.5714285714285712],[12.0,4.5714285714285712],[13.0,4.5714285714285712],[14.0,4.5714285714285712],[15.0,4.5714285714285712],[15.428571428571429,5.0],[15.428571428571429,6.0],[15.428571428571429,7.0],[15.428571428571429,8.0],[15.428571428571429,9.0],[15.0,9.4285714285714288],[14.0,9.4285714285714288],[13.0,9.4285714285714288],[12.0,9.4285714285714288],[11.0,9.4285714285714288]],[[11.428571428571429,8.0],[12.0,8.5714285714285712],[13.0,8.5714285714285712],[14.0,8.5714285714285712],[14.571428571428571,8.0],[14.571428571428571,7.0],[14.571428571428571,6.0],[14.0,5.4285714285714288],[13.0,5.4285714285714288],[12.0,5.4285714285714288],[11.428571428571429,6.0],[11.428571428571429,7.0],[11.428571428571429,8.0]],[[13.0,7.6923076923076925],[12.307692307692307,7.0],[13.0,6.3076923076923075],[13.692307692307693,7.0],[13.0,7.6923076923076925]]]},\"properties\":{}}]}"; 
+    char* expected = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"MultiLineString\",\"coordinates\":[[[11.0,9.4285714285714288],[10.571428571428571,9.0],[10.571428571428571,8.0],[10.571428571428571,7.0],[10.571428571428571,6.0],[10.571428571428571,5.0],[11.0,4.5714285714285712],[12.0,4.5714285714285712],[13.0,4.5714285714285712],[14.0,4.5714285714285712],[15.0,4.5714285714285712],[15.428571428571429,5.0],[15.428571428571429,6.0],[15.428571428571429,7.0],[15.428571428571429,8.0],[15.428571428571429,9.0],[15.0,9.4285714285714288],[14.0,9.4285714285714288],[13.0,9.4285714285714288],[12.0,9.4285714285714288],[11.0,9.4285714285714288]],[[11.428571428571429,8.0],[12.0,8.5714285714285712],[13.0,8.5714285714285712],[14.0,8.5714285714285712],[14.571428571428571,8.0],[14.571428571428571,7.0],[14.571428571428571,6.0],[14.0,5.4285714285714288],[13.0,5.4285714285714288],[12.0,5.4285714285714288],[11.428571428571429,6.0],[11.428571428571429,7.0],[11.428571428571429,8.0]],[[13.0,7.6923076923076925],[12.307692307692307,7.0],[13.0,6.3076923076923075],[13.692307692307693,7.0],[13.0,7.6923076923076925]]]},\"properties\":{\"threshold\":9.0}}]}"; 
     printf("Expected: %s\n\n", expected);
     printf("Got: %s\n", geojson);
     ASSERT(!strcmp(geojson, expected));
@@ -121,7 +121,7 @@ TEST marching_squares_lib_should_generate_geojson_isolines_for_unclosed_paths(vo
         intervals
     );
 
-    char* expected = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"MultiLineString\",\"coordinates\":[[[11.5,10.0],[12.0,9.5]]]},\"properties\":{}}]}"; 
+    char* expected = "{\"type\":\"FeatureCollection\",\"features\":[{\"type\":\"Feature\",\"geometry\":{\"type\":\"MultiLineString\",\"coordinates\":[[[11.5,10.0],[12.0,9.5]]]},\"properties\":{\"threshold\":0.5}}]}"; 
     printf("Expected: %s\n\n", expected);
     printf("Got: %s\n", geojson);
     ASSERT(!strcmp(geojson, expected));
