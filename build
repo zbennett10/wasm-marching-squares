@@ -6,7 +6,7 @@ emcc -O3 \
      include/jansson-2.13.1/emcc-lib/lib/libjansson.a \
      -Iinclude/jansson-2.13.1/emcc-lib/include \
      -s EXPORTED_FUNCTIONS='["_generate_isolines_geojson_"]' \
-     -s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap']" \
+     -s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap', 'UTF8ToString']" \
      -s WASM=1 \
      -s ALLOW_MEMORY_GROWTH=1 \
      -s NO_EXIT_RUNTIME=0 \
