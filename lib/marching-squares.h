@@ -80,8 +80,6 @@ void add_multilines_to_geojson(int path_count, MultiLine **paths, json_t *coordi
 
 int get_line_count(MultiLine *path);
 
-double interpolate(double threshold, double y0, double y1);
-
 void print_path(MultiLine *path, double geotransform[6]);
 
 char* determine_edge(ContourGridCell *cell, int contour_state, int prev_contour_state);

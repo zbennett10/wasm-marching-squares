@@ -25,6 +25,7 @@ char* generate_isolines_geojson(
     json_object_set_new(isolines, "features", features);
 
     // Implement marching squares for each threshold boundary
+    // https://en.wikipedia.org/wiki/Marching_squares
     for (int threshold_idx = 0; threshold_idx < interval_count; threshold_idx++) {
       double threshold = intervals[threshold_idx];
       int grid_rows = raster_data_rows - 1;
@@ -76,51 +77,51 @@ char* generate_isolines_geojson(
                     top = bottom = left = right = 0.5;
 
                     if(contour_state == 1){
-                        left    = 1 - interpolate(threshold, corners.top_left, corners.bottom_left);
-                        bottom  = 1 - interpolate(threshold, corners.bottom_right, corners.bottom_left);
+                        left    = 1 - INTERPOLATE_CONTOUR_POS(threshold, corners.top_left, corners.bottom_left);
+                        bottom  = 1 - INTERPOLATE_CONTOUR_POS(threshold, corners.bottom_right, corners.bottom_left);
                     } else if(contour_state == 2){
-                        bottom  = interpolate(threshold, corners.bottom_left, corners.bottom_right);
-                        right   = 1 - interpolate(threshold, corners.top_right, corners.bottom_right);
+                        bottom  =     INTERPOLATE_CONTOUR_POS(threshold, corners.bottom_left, corners.bottom_right);
+                        right   = 1 - INTERPOLATE_CONTOUR_POS(threshold, corners.top_right, corners.bottom_right);
                     } else if(contour_state == 3){
-                        left    = 1 - interpolate(threshold, corners.top_left, corners.bottom_left);
-                        right   = 1 - interpolate(threshold, corners.top_right, corners.bottom_right);
+                        left    = 1 - INTERPOLATE_CONTOUR_POS(threshold, corners.top_left, corners.bottom_left);
+                        right   = 1 - INTERPOLATE_CONTOUR_POS(threshold, corners.top_right, corners.bottom_right);
                     } else if(contour_state == 4){
-                        top     = interpolate(threshold, corners.top_left, corners.top_right);
-                        right   = interpolate(threshold, corners.bottom_right, corners.top_right);
+                        top     =     INTERPOLATE_CONTOUR_POS(threshold, corners.top_left, corners.top_right);
+                        right   =     INTERPOLATE_CONTOUR_POS(threshold, corners.bottom_right, corners.top_right);
                     } else if(contour_state == 5){
-                        top     = interpolate(threshold, corners.top_left, corners.top_right);
-                        right   = interpolate(threshold, corners.bottom_right, corners.top_right);
-                        bottom  = 1 - interpolate(threshold, corners.bottom_right, corners.bottom_left);
-                        left    = 1 - interpolate(threshold, corners.top_left, corners.bottom_left);
+                        top     =     INTERPOLATE_CONTOUR_POS(threshold, corners.top_left, corners.top_right);
+                        right   =     INTERPOLATE_CONTOUR_POS(threshold, corners.bottom_right, corners.top_right);
+                        bottom  = 1 - INTERPOLATE_CONTOUR_POS(threshold, corners.bottom_right, corners.bottom_left);
+                        left    = 1 - INTERPOLATE_CONTOUR_POS(threshold, corners.top_left, corners.bottom_left);
                     } else if(contour_state == 6){
-                        bottom  = interpolate(threshold, corners.bottom_left, corners.bottom_right);
-                        top     = interpolate(threshold, corners.top_left, corners.top_right);
+                        bottom  =     INTERPOLATE_CONTOUR_POS(threshold, corners.bottom_left, corners.bottom_right);
+                        top     =     INTERPOLATE_CONTOUR_POS(threshold, corners.top_left, corners.top_right);
                     } else if(contour_state == 7){
-                        left    = 1 - interpolate(threshold, corners.top_left, corners.bottom_left);
-                        top     = interpolate(threshold, corners.top_left, corners.top_right);
+                        left    = 1 - INTERPOLATE_CONTOUR_POS(threshold, corners.top_left, corners.bottom_left);
+                        top     =     INTERPOLATE_CONTOUR_POS(threshold, corners.top_left, corners.top_right);
                     } else if(contour_state == 8){
-                        left    = interpolate(threshold, corners.bottom_left, corners.top_left);
-                        top     = 1 - interpolate(threshold, corners.top_right, corners.top_left);
+                        left    =     INTERPOLATE_CONTOUR_POS(threshold, corners.bottom_left, corners.top_left);
+                        top     = 1 - INTERPOLATE_CONTOUR_POS(threshold, corners.top_right, corners.top_left);
                     } else if(contour_state == 9){
-                        bottom  = 1 - interpolate(threshold, corners.bottom_right, corners.bottom_left);
-                        top     = 1 - interpolate(threshold, corners.top_right, corners.top_left);
+                        bottom  = 1 - INTERPOLATE_CONTOUR_POS(threshold, corners.bottom_right, corners.bottom_left);
+                        top     = 1 - INTERPOLATE_CONTOUR_POS(threshold, corners.top_right, corners.top_left);
                     } else if(contour_state == 10){
-                        top     = 1 - interpolate(threshold, corners.top_right, corners.top_left);
-                        right   = 1 - interpolate(threshold, corners.top_right, corners.bottom_right);
-                        bottom  = interpolate(threshold, corners.bottom_left, corners.bottom_right);
-                        left    = interpolate(threshold, corners.bottom_left, corners.top_left);
+                        top     = 1 - INTERPOLATE_CONTOUR_POS(threshold, corners.top_right, corners.top_left);
+                        right   = 1 - INTERPOLATE_CONTOUR_POS(threshold, corners.top_right, corners.bottom_right);
+                        bottom  =     INTERPOLATE_CONTOUR_POS(threshold, corners.bottom_left, corners.bottom_right);
+                        left    =     INTERPOLATE_CONTOUR_POS(threshold, corners.bottom_left, corners.top_left);
                     } else if(contour_state == 11){
-                        top     = 1 - interpolate(threshold, corners.top_right, corners.top_left);
-                        right   = 1 - interpolate(threshold, corners.top_right, corners.bottom_right);
+                        top     = 1 - INTERPOLATE_CONTOUR_POS(threshold, corners.top_right, corners.top_left);
+                        right   = 1 - INTERPOLATE_CONTOUR_POS(threshold, corners.top_right, corners.bottom_right);
                     } else if(contour_state == 12){
-                        left    = interpolate(threshold, corners.bottom_left, corners.top_left);
-                        right   = interpolate(threshold, corners.bottom_right, corners.top_right);
+                        left    =     INTERPOLATE_CONTOUR_POS(threshold, corners.bottom_left, corners.top_left);
+                        right   =     INTERPOLATE_CONTOUR_POS(threshold, corners.bottom_right, corners.top_right);
                     } else if(contour_state == 13){
-                        bottom  = 1 - interpolate(threshold, corners.bottom_right, corners.bottom_left);
-                        right   = interpolate(threshold, corners.bottom_right, corners.top_right);
+                        bottom  = 1 - INTERPOLATE_CONTOUR_POS(threshold, corners.bottom_right, corners.bottom_left);
+                        right   =     INTERPOLATE_CONTOUR_POS(threshold, corners.bottom_right, corners.top_right);
                     } else if(contour_state == 14){
-                        left    = interpolate(threshold, corners.bottom_left, corners.top_left);
-                        bottom  = interpolate(threshold, corners.bottom_left, corners.bottom_right);
+                        left    =     INTERPOLATE_CONTOUR_POS(threshold, corners.bottom_left, corners.top_left);
+                        bottom  =     INTERPOLATE_CONTOUR_POS(threshold, corners.bottom_left, corners.bottom_right);
                     } else {
                         printf("Illegal contour_state detected: %d\n",contour_state);
                     }
@@ -137,6 +138,7 @@ char* generate_isolines_geojson(
 
                     cells[i][j] = cell;
                 } else {
+                    // Add empty cells for contour state of 0 or 15
                     cells[i][j] = EMPTY_CELL;
                 }
 
@@ -159,19 +161,14 @@ char* generate_isolines_geojson(
                 if(!cell.is_saddle && !CELL_NO_EDGES(cell.contour_state)) {
                     MultiLine *path = gen_path(grid_cols, grid_rows, cells, i, j);
                     bool merged = false;
-                    /* we may try to merge paths at this point */
+
                     if(path->mergable) {
-                      /*
-                        search backwards through the path array to find an entry
-                        that starts with where the current path ends...
-                      */
                       MultiLine *tail = path;
                       while(tail->next != NULL) {
                         tail = tail->next;
                       }
                       Point new_path_endpoint = tail->point;
 
-                      // Why path_idx need to be - 3 here..? Original code has it at - 1 but missed lots of merged paths without it.
                       for(int k = path_idx - 1; k >= 0; k--){
                         if((fabs(paths[k]->point.x - new_path_endpoint.x) <= epsilon) && (fabs(paths[k]->point.y - new_path_endpoint.y) <= epsilon)){
                           for(int l = get_line_count(path) - 2; l >= 0; --l){
@@ -219,7 +216,6 @@ MultiLine* gen_path(int grid_cols, int row_count, ContourGridCell (*cells)[grid_
 
     Point pt = gen_point_from_edge(current_cell, edge);
 
-    /* push initial segment */
     path->point = (Point) { .x = col + pt.x, .y = row + pt.y };
     edge = next_edges[contour_state];
     pt = gen_point_from_edge(current_cell, edge);
@@ -233,7 +229,6 @@ MultiLine* gen_path(int grid_cols, int row_count, ContourGridCell (*cells)[grid_
       current_cell->contour_state = 15;
     }
 
-    // /* now walk arround the enclosed area in clockwise-direction */
     int k = col + delta_x_contour[contour_state];
     int l = row + delta_y_contour[contour_state];
     int prev_contour_state = contour_state;
@@ -304,10 +299,6 @@ Point apply_geo_transformation_to_pixel_coordinates(double x, double y, double g
     return (Point){.x = georeferenced_x, .y = georeferenced_y };
 }
 
-double interpolate(double threshold, double y0, double y1) {
-    return (threshold - y0) / (y1 - y0);
-}
-
 void print_path(MultiLine *path, double geotransform[6]) {
   while(path) {
     Point geopoint = apply_geo_transformation_to_pixel_coordinates(path->point.x, path->point.y, geotransform);
@@ -373,7 +364,6 @@ bool is_empty_cell(ContourGridCell *cell) {
 char* determine_edge(ContourGridCell *cell, int contour_state, int prev_contour_state) {
   char* edge  = next_edges[contour_state];
 
-  /* select upper or lower band, depending on previous cells cval */
   if (contour_state == 5 && cell->is_saddle) {
     return delta_y_contour[prev_contour_state] == -1 ? "left" : "right";
   }
