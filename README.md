@@ -4,6 +4,8 @@ The algorithm is implemented in C and currently generates GeoJSON isolines given
 
 # Usage
 
+*WIP*
+
 # Caveats
 - Isoband generation is not implemented *yet*
 - GeoTIFFs covering the earth and/or having *lots* of intervals can cause out of memory errors... PRs welcome while this is worked out...
