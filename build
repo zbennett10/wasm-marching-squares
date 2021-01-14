@@ -8,6 +8,7 @@ emcc -O3 \
      -s EXPORTED_FUNCTIONS='["_generate_isolines_geojson_"]' \
      -s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap', 'UTF8ToString']" \
      -s WASM=1 \
+     -s ENVIRONMENT='web' \
      -s ALLOW_MEMORY_GROWTH=1 \
      -s NO_EXIT_RUNTIME=0 \
      -s LLD_REPORT_UNDEFINED \

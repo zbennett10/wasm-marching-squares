@@ -1,0 +1,30 @@
+{
+  "name": "wasm-marching-squares",
+  "version": "1.0.0",
+  "description": "A WebAssembly library for generating isolines and isobands in the browser via the marching squares algorithm.",
+  "main": "dist/wasm-marching-squares.js",
+  "files": [
+    "dist/*"
+  ],
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "cd test && ./test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zbennett10/wasm-marching-squares.git"
+  },
+  "keywords": [
+    "marching-squares",
+    "wasm"
+  ],
+  "author": "Zachary Bennett",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zbennett10/wasm-marching-squares/issues"
+  },
+  "homepage": "https://github.com/zbennett10/wasm-marching-squares#readme"
+}
