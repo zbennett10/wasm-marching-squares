@@ -6,7 +6,10 @@ The algorithm is implemented in C and currently generates GeoJSON isolines given
 
 *WIP*
 
+For now, you can check out the test folder and see how the `map.js` file is using the WASM module. In the future, the external API will be much easier to use.
+
 # Caveats
+- Need to add a cleaner external API for ease of use.
 - Isoband generation is not implemented *yet*
 
 # Build
