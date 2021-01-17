@@ -1,3 +1,4 @@
+import marchingSquaresWasmModule from './wasm-marching-squares.js';
 
 var map = L.map('map').setView([30, 0], 2);
 
@@ -5,57 +6,19 @@ L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {
     attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data  &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>'
 }).addTo(map);
 
-//var url = "https://stamen.github.io/spatial-dataviz-for-data-scientists/data/world/ne_50m_populated_places_simple.geojson"
-// var url = "ne_50m_populated_places_simple.geojson"A
-
-// GREAT TEST CASE IF I CAN REPRODUCE THIS:
-// http://bl.ocks.org/rveciana/420a33fd0963e2a6aad16da54725af36
-// vardah.tiff
-
-// Download geotiff using local ArrayBuffer
 (async function() {
-    // const response = await fetch('tiffs/sfctmp.tif');
+    const WasmMarchingSquares = await marchingSquaresWasmModule();
+
     const response = await fetch('tiffs/vardah.tif');
     const arrayBuffer = await response.arrayBuffer();
-    const tiff = await GeoTIFF.fromArrayBuffer(arrayBuffer);
+    const tiff = await window.GeoTIFF.fromArrayBuffer(arrayBuffer);
     const image = await tiff.getImage();
     const rasters = await image.readRasters();
 
-    /**
-     * https://stackoverflow.com/questions/27166739/description-of-parameters-of-gdal-setgeotransform
-     *
-     * Geotransform parameters:
-     * [ x_coord of upper left corner of upper left pixel, pixel_width, 0( because north up), y coordinate of upper left corner of upper left pixel, 0 (because north up), pixel_height ]
-     * index 0 and 3 above combine to make the origin of the raster)which constitutes the top left corner of the top left pixel of the raster image if (0, 0)
-     *
-     * Using these parameters you can then do an affine transformation to transform raster pixel coordinates to a given spatial reference system.
-     * 
-     * 
-     * Spatial Reference System
-     *      |
-     *      |
-     *      |
-     *      |
-     * (0,0)|___________
-     * 
-     *  Raster
-     *      ____________
-     * (0,0)|
-     *      |
-     *      |
-     *      |
-     * 
-     * Affine transformation transforms raster coordinates to spatial coordinates:
-     * var applyGeoTransform = function(x, y, geoTransform){
-        var xgeo = geoTransform[0] + x*geoTransform[1] + y*geoTransform[2];
-        var ygeo = geoTransform[3] + x*geoTransform[4] + y*geoTransform[5];
-        return [xgeo, ygeo];
-        };
-     */
     const rowRotation    = 0,
-          columnRotation = 0,
-          tiepoint       = image.getTiePoints()[0],
-          pixelScale     = image.getFileDirectory().ModelPixelScale;
+        columnRotation = 0,
+        tiepoint       = image.getTiePoints()[0],
+        pixelScale     = image.getFileDirectory().ModelPixelScale;
 
     var transform = [tiepoint.x, pixelScale[0], 0, tiepoint.y, 0, -1*pixelScale[1]];
 
@@ -103,8 +66,6 @@ L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {
     let rasterDataPointer, geoTransformPointer, intervalsPointer, pressIsolinesPointer;
     let isolinesLayer;
 
-    console.log(transformedRasterData);
-
     document.querySelector('.mybutton')
             .addEventListener('click', () => {
                 if (isolinesLayer) {
@@ -114,47 +75,46 @@ L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {
                 try {
                     const raster_data_rows = transformedRasterData.length,
                         raster_data_cols = transformedRasterData[0].length;
-                
-                    const bytesPerElement = Module.HEAPF64.BYTES_PER_ELEMENT;
-                    rasterDataPointer = Module._malloc(bytesPerElement * raster_data_rows * raster_data_cols);
+                    
+                    const bytesPerElement = WasmMarchingSquares.HEAPF64.BYTES_PER_ELEMENT;
+                    rasterDataPointer = WasmMarchingSquares._malloc(bytesPerElement * raster_data_rows * raster_data_cols);
                     for(let i = 0; i < raster_data_rows; i++) {
                         const row = transformedRasterData[i];
-                        Module.HEAPF64.set(Float64Array.of(...row), (rasterDataPointer / bytesPerElement) + (i*raster_data_cols));
+                        WasmMarchingSquares.HEAPF64.set(Float64Array.of(...row), (rasterDataPointer / bytesPerElement) + (i*raster_data_cols));
                     }
 
-                    geoTransformPointer = Module._malloc(bytesPerElement * 6);
-                    Module.HEAPF64.set(transform, (geoTransformPointer / bytesPerElement));
+                    geoTransformPointer = WasmMarchingSquares._malloc(bytesPerElement * 6);
+                    WasmMarchingSquares.HEAPF64.set(transform, (geoTransformPointer / bytesPerElement));
 
-                    intervalsPointer = Module._malloc(bytesPerElement * intervals.length);
-                    Module.HEAPF64.set(intervals, (intervalsPointer / bytesPerElement));
+                    intervalsPointer = WasmMarchingSquares._malloc(bytesPerElement * intervals.length);
+                    WasmMarchingSquares.HEAPF64.set(intervals, (intervalsPointer / bytesPerElement));
 
-                    const pressIsolinesPointer = Module.ccall(
+                    const pressIsolinesPointer = WasmMarchingSquares.ccall(
                         'generate_isolines_geojson_',	// name of C function
                         'number',	// Get the raw pointer - make sure to free this!
                         ['number', 'number', 'number', 'number', 'number', 'number'],	// argument types
                         [raster_data_rows, raster_data_cols, rasterDataPointer, geoTransformPointer, intervals.length, intervalsPointer ]	// arguments
                     );
 
-                    const pressIsolines = Module.UTF8ToString(pressIsolinesPointer); // Convert the pointer to the string we need
+                    const pressIsolines = WasmMarchingSquares.UTF8ToString(pressIsolinesPointer); // Convert the pointer to the string we need
                     
                     isolinesLayer = L.geoJson(JSON.parse(pressIsolines), {
                         style: {
-                      "color": "red",
-                      "weight": 2,
-                      "opacity": 0.65
+                    "color": "red",
+                    "weight": 2,
+                    "opacity": 0.65
                     }
 
-                 });
-                 isolinesLayer.addTo(map);
+                });
+                isolinesLayer.addTo(map);
 
                 } catch (error) {
                     console.log('ccall error generating isolines: ', error);
                 } finally {
                     [rasterDataPointer, geoTransformPointer, intervalsPointer, pressIsolinesPointer].forEach(pointer => {
-                        if (pointer) Module._free(pointer);
+                        if (pointer) WasmMarchingSquares._free(pointer);
                     })
                 }
         });
 
 })();
-

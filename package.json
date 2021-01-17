@@ -26,5 +26,6 @@
   "bugs": {
     "url": "https://github.com/zbennett10/wasm-marching-squares/issues"
   },
-  "homepage": "https://github.com/zbennett10/wasm-marching-squares#readme"
+  "homepage": "https://github.com/zbennett10/wasm-marching-squares#readme",
+  "browser": { "fs": false, "os": false, "path": false, "crypto": false, "buffer": false, "console-browserify": false, "process/browser": false }
 }

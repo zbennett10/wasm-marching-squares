@@ -6,11 +6,17 @@ emcc -O3 \
      include/jansson-2.13.1/emcc-lib/lib/libjansson.a \
      -Iinclude/jansson-2.13.1/emcc-lib/include \
      -s EXPORTED_FUNCTIONS='["_generate_isolines_geojson_"]' \
-     -s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap', 'UTF8ToString']" \
+     -s "EXTRA_EXPORTED_RUNTIME_METHODS=['ccall', 'cwrap', 'UTF8ToString', 'addOnPreMain']" \
      -s WASM=1 \
-     -s ENVIRONMENT='web' \
      -s ALLOW_MEMORY_GROWTH=1 \
      -s NO_EXIT_RUNTIME=0 \
      -s LLD_REPORT_UNDEFINED \
      -s ASSERTIONS=1 \
-     -o dist/wasm-marching-squares.js
+     -s EXPORT_ES6=1 \
+     -s MODULARIZE=1 \
+     -s STRICT=1 \
+     -s MALLOC=emmalloc \
+     --pre-js 'lib/pre-emcc-build.js' \
+     --post-js 'lib/post-emcc-build.js' \
+     -o dist/wasm-marching-squares.js \
+     && cp dist/* test/
