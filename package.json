@@ -1,8 +1,8 @@
 {
   "name": "wasm-marching-squares",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A WebAssembly library for generating isolines and isobands in the browser via the marching squares algorithm.",
-  "main": "dist/wasm-marching-squares.js",
+  "main": "dist/index.js",
   "files": [
     "dist/*"
   ],

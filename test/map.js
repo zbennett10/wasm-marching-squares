@@ -1,4 +1,4 @@
-import marchingSquaresWasmModule from './wasm-marching-squares.js';
+import loadWasmMarchingSquaresModule from './index.js';
 
 var map = L.map('map').setView([30, 0], 2);
 
@@ -6,8 +6,10 @@ L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {
     attribution: 'Map tiles by <a href="http://stamen.com">Stamen Design</a>, under <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data  &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>, under <a href="http://www.openstreetmap.org/copyright">ODbL</a>'
 }).addTo(map);
 
+
 (async function() {
-    const WasmMarchingSquares = await marchingSquaresWasmModule();
+    // Instantiate the WASM module
+    const WasmMarchingSquares = await loadWasmMarchingSquaresModule();
 
     const response = await fetch('tiffs/vardah.tif');
     const arrayBuffer = await response.arrayBuffer();
@@ -63,7 +65,6 @@ L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {
     const transformedRasterData = pressData;
     const intervals = intervalsPress;
 
-    let rasterDataPointer, geoTransformPointer, intervalsPointer, pressIsolinesPointer;
     let isolinesLayer;
 
     document.querySelector('.mybutton')
@@ -72,49 +73,21 @@ L.tileLayer('http://{s}.tile.stamen.com/toner/{z}/{x}/{y}.png', {
                     map.removeLayer(isolinesLayer)
                 }
 
-                try {
-                    const raster_data_rows = transformedRasterData.length,
-                        raster_data_cols = transformedRasterData[0].length;
-                    
-                    const bytesPerElement = WasmMarchingSquares.HEAPF64.BYTES_PER_ELEMENT;
-                    rasterDataPointer = WasmMarchingSquares._malloc(bytesPerElement * raster_data_rows * raster_data_cols);
-                    for(let i = 0; i < raster_data_rows; i++) {
-                        const row = transformedRasterData[i];
-                        WasmMarchingSquares.HEAPF64.set(Float64Array.of(...row), (rasterDataPointer / bytesPerElement) + (i*raster_data_cols));
-                    }
+                const pressIsolines = WasmMarchingSquares.generateIsolines(transformedRasterData, intervals, transform);
 
-                    geoTransformPointer = WasmMarchingSquares._malloc(bytesPerElement * 6);
-                    WasmMarchingSquares.HEAPF64.set(transform, (geoTransformPointer / bytesPerElement));
-
-                    intervalsPointer = WasmMarchingSquares._malloc(bytesPerElement * intervals.length);
-                    WasmMarchingSquares.HEAPF64.set(intervals, (intervalsPointer / bytesPerElement));
-
-                    const pressIsolinesPointer = WasmMarchingSquares.ccall(
-                        'generate_isolines_geojson_',	// name of C function
-                        'number',	// Get the raw pointer - make sure to free this!
-                        ['number', 'number', 'number', 'number', 'number', 'number'],	// argument types
-                        [raster_data_rows, raster_data_cols, rasterDataPointer, geoTransformPointer, intervals.length, intervalsPointer ]	// arguments
+                isolinesLayer =
+                    L.geoJson(
+                        JSON.parse(pressIsolines),
+                        {
+                            style: {
+                                "color": "red",
+                                "weight": 2,
+                                "opacity": 0.65
+                            }
+                        }
                     );
 
-                    const pressIsolines = WasmMarchingSquares.UTF8ToString(pressIsolinesPointer); // Convert the pointer to the string we need
-                    
-                    isolinesLayer = L.geoJson(JSON.parse(pressIsolines), {
-                        style: {
-                    "color": "red",
-                    "weight": 2,
-                    "opacity": 0.65
-                    }
-
-                });
                 isolinesLayer.addTo(map);
-
-                } catch (error) {
-                    console.log('ccall error generating isolines: ', error);
-                } finally {
-                    [rasterDataPointer, geoTransformPointer, intervalsPointer, pressIsolinesPointer].forEach(pointer => {
-                        if (pointer) WasmMarchingSquares._free(pointer);
-                    })
-                }
         });
 
 })();
