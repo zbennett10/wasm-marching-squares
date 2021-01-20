@@ -4,9 +4,21 @@ The algorithm is implemented in C and currently generates GeoJSON isolines given
 
 # Usage
 
-*WIP*
+Import the library;
+`import loadWasmMarchingSquaresModule from 'wasm-marching-squares';`
 
-For now, you can check out the test folder and see how the `map.js` file is using the WASM module. In the future, the external API will be much easier to use.
+Load the WASM library asyncronously:
+`const WasmMarchingSquares = await loadWasmMarchingSquaresModule();`
+
+Create some isolines!
+```javascript
+/**
+ * rasterMatrix: number[][]
+ * intervals: number[]
+ * transform: number[] (six values -> please see https://gdal.org/user/raster_data_model.html#affine-geotransform)
+ **/
+const isolines = WasmMarchingSquares.generateIsolines(rasterMatrix, intervals, transform);
+```
 
 # Caveats
 - Need to add a cleaner external API for ease of use.
